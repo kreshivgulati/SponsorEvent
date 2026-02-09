@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EventMatch</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Login Page Specific Styles */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: var(--text-light);
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .login-divider span {
+            padding: 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-google:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-google svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .otp-form {
+            display: none;
+        }
+
+        .otp-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .otp-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1.25rem;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .resend-otp {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .resend-otp a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resend-otp a:hover {
+            text-decoration: underline;
+        }
+
+        .back-to-options {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .back-to-options button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+    <script>
+        // API Configuration
+        window.API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+    </script>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Welcome to EventMatch</h1>
+                <p>Sign in to continue</p>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+
+            <!-- Login Options -->
+            <div id="loginOptions">
+                <!-- Google Login config -->
+                <div
+                  id="g_id_onload"
+                  data-client_id="545444379115-aijvfr5gke69u2u7rn9k4ru7bs9ql3d6.apps.googleusercontent.com"
+                  data-callback="handleGoogleLogin"
+                ></div>
+
+                <!-- Google Sign In Button (rendered by GIS) -->
+                <div
+                  class="g_id_signin"
+                  data-type="standard"
+                  data-size="large"
+                  data-width="100%"
+                  data-theme="outline"
+                  data-text="continue_with"
+                  data-shape="rectangular"
+                ></div>
+
+                <div class="login-divider">
+                    <span>OR</span>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="showOTPForm()">
+                    Continue with Email OTP
+                </button>
+            </div>
+
+            <!-- OTP Form -->
+            <div id="otpForm" class="otp-form">
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="your.email@gmail.com"
+                        required
+                    >
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="sendOTP()">
+                    Send OTP
+                </button>
+
+                <div id="otpInputGroup" class="otp-input-group" style="display: none;">
+                    <input 
+                        type="text" 
+                        id="otp" 
+                        class="otp-input" 
+                        placeholder="000000"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                    >
+                </div>
+
+                <div id="nameInputGroup" class="form-group" style="display: none;">
+                    <label for="name">Full Name *</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Enter your full name"
+                    >
+                </div>
+
+                <button id="verifyOTPButton" class="btn btn-primary" style="width: 100%; margin-top: 1rem; display: none;" onclick="verifyOTP()">
+                    Verify OTP
+                </button>
+
+                <div class="resend-otp">
+                    <span>Didn't receive OTP? </span>
+                    <a href="#" onclick="sendOTP(); return false;">Resend</a>
+                </div>
+
+                <div class="back-to-options">
+                    <button onclick="showLoginOptions()">← Back to login options</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Google Login callback for Google Identity Services -->
+    <script>
+        async function handleGoogleLogin(response) {
+            const errorEl = document.getElementById('errorMessage');
+            const overlay = document.getElementById('loadingOverlay');
+
+            try {
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+
+                const res = await fetch(window.API_BASE_URL + '/api/auth/google', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token: response.credential })
+                });
+
+                let data = {};
+                try {
+                    data = await res.json();
+                } catch (e) {
+                    data = {};
+                }
+
+                if (!res.ok) {
+                    const message = data.message || 'Google login failed. Please try again.';
+                    if (errorEl) {
+                        errorEl.textContent = message;
+                        errorEl.classList.add('show');
+                    }
+                    return;
+                }
+
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token);
+                }
+                if (data.user) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                }
+
+                // Redirect to main app after successful login
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Google login error:', error);
+                if (errorEl) {
+                    errorEl.textContent = 'Network error. Please try again.';
+                    errorEl.classList.add('show');
+                }
+            } finally {
+                if (overlay) {
+                    overlay.classList.remove('active');
+                }
+            }
+        }
+    </script>
+
+    <script src="login.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auth Callback</title>
+</head>
+<body>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        const requiresRole = params.get("requiresRoleSelection");
+      
+        if (token) {
+          localStorage.setItem("authToken", token);
+      
+          if (requiresRole === "true") {
+            window.location.href = "/select-role";
+          } else {
+            window.location.href = "/";
+          }
+        } else {
+          document.body.innerText = "Login failed";
+        }
+      </script>
+      
+</body>
+</html>

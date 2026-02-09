@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event-Sponsor Matching Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- API Configuration - Update this for production -->
+    <script>
+      // Set API base URL (defaults to localhost:5000)
+      // For production, change this to your backend URL
+      window.API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+      // Authentication checks for protected pages are handled in script.js
+      // using authToken in localStorage.
+    </script>
+
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar animate-navbar">
+        <div class="container">
+            <div class="nav-brand">EventMatch</div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#list-event">List Event</a></li>
+                <li><a href="#sponsor-form">Become a Sponsor</a></li>
+                <li><a href="#suggestions">Suggestions</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1 class="hero-title animate-hero-title">Find the Right Sponsors for Your Event</h1>
+            <p class="hero-description animate-hero-description">
+                Connect event organizers with relevant sponsors through our intelligent matching platform. 
+                List your event details and let our system suggest the perfect sponsors, or create a sponsor 
+                profile to discover events that align with your interests.
+            </p>
+            <div class="hero-buttons animate-hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('list-event')">List Your Event</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('sponsor-form')">I'm a Sponsor</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">How It Works</h2>
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step-card animate-on-scroll" data-animation-delay="0">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Organizer Lists Event Details</h3>
+                    <p class="step-description">
+                        Event organizers provide comprehensive information about their event including 
+                        event name, domain/category, expected audience size, budget requirements, and location.
+                    </p>
+                </div>
+                <!-- Step 2 -->
+                <div class="step-card animate-on-scroll" data-animation-delay="100">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Sponsors Create Profiles</h3>
+                    <p class="step-description">
+                        Sponsors create detailed profiles specifying their industry interests, target 
+                        audience preferences, budget range, and geographic focus areas.
+                    </p>
+                </div>
+                <!-- Step 3 -->
+                <div class="step-card animate-on-scroll" data-animation-delay="200">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Platform Suggests Relevant Events</h3>
+                    <p class="step-description">
+                        Our intelligent matching algorithm analyzes event details and sponsor profiles 
+                        to suggest the most relevant events to sponsors based on compatibility scores.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Listing Form Section -->
+    <section id="list-event" class="event-form-section">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">List Your Event</h2>
+            <div class="form-container animate-on-scroll">
+                <form id="eventForm" class="event-form">
+                    <div class="form-group">
+                        <label for="eventName">Event Name *</label>
+                        <input 
+                            type="text" 
+                            id="eventName" 
+                            name="eventName" 
+                            placeholder="Enter your event name"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="technology">Technology</option>
+                            <option value="sports">Sports</option>
+                            <option value="music">Music</option>
+                            <option value="business">Business</option>
+                            <option value="education">Education</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="arts">Arts & Culture</option>
+                            <option value="food">Food & Beverage</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="audience">Expected Audience *</label>
+                        <input 
+                            type="number" 
+                            id="audience" 
+                            name="audience" 
+                            placeholder="Expected number of attendees"
+                            min="1"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="budget">Budget Required ($) *</label>
+                        <input 
+                            type="number" 
+                            id="budget" 
+                            name="budget" 
+                            placeholder="Enter budget amount"
+                            min="0"
+                            step="100"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input 
+                            type="text" 
+                            id="location" 
+                            name="location" 
+                            placeholder="City, State/Country"
+                            required
+                        >
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <span class="btn-text">Submit Event</span>
+                        <span class="btn-loader hidden"></span>
+                    </button>
+                </form>
+                
+                <!-- Success Message (hidden by default) -->
+                <div id="successMessage" class="success-message hidden">
+                    <div class="success-icon">✓</div>
+                    <h3>Event Listed Successfully!</h3>
+                    <p>Your event has been submitted. Our platform will now match it with relevant sponsors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsor Profile Form Section -->
+    <section id="sponsor-form" class="sponsor-form-section">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">Create Sponsor Profile</h2>
+            <p class="section-subtitle animate-on-scroll">Tell us about your sponsorship preferences</p>
+            <div class="form-container animate-on-scroll">
+                <form id="sponsorForm" class="sponsor-form">
+                    <div class="form-group">
+                        <label for="sponsorName">Sponsor/Company Name *</label>
+                        <input 
+                            type="text" 
+                            id="sponsorName" 
+                            name="sponsorName" 
+                            placeholder="Enter your company name"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="preferredCategories">Preferred Categories *</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="technology"> Technology
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="sports"> Sports
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="music"> Music
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="business"> Business
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="education"> Education
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="healthcare"> Healthcare
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="arts"> Arts & Culture
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="preferredCategories" value="food"> Food & Beverage
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="minAudience">Minimum Audience Size *</label>
+                        <input 
+                            type="number" 
+                            id="minAudience" 
+                            name="minAudience" 
+                            placeholder="Minimum number of attendees"
+                            min="1"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxBudget">Maximum Budget ($) *</label>
+                        <input 
+                            type="number" 
+                            id="maxBudget" 
+                            name="maxBudget" 
+                            placeholder="Maximum budget you can provide"
+                            min="0"
+                            step="100"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="preferredLocation">Preferred Location</label>
+                        <input 
+                            type="text" 
+                            id="preferredLocation" 
+                            name="preferredLocation" 
+                            placeholder="City, State/Country (or 'any' for all locations)"
+                            value="any"
+                        >
+                        <small class="form-hint">Leave as "any" to see events from all locations</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-secondary btn-submit">
+                        <span class="btn-text">Create Profile & Find Matches</span>
+                        <span class="btn-loader hidden"></span>
+                    </button>
+                </form>
+                
+                <!-- Success Message (hidden by default) -->
+                <div id="sponsorSuccessMessage" class="success-message hidden">
+                    <div class="success-icon">✓</div>
+                    <h3>Profile Created Successfully!</h3>
+                    <p>Your sponsor profile has been created. Finding matching events...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sponsor Suggestions Section -->
+    <section id="suggestions" class="suggestions-section">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll">Suggested Events for Sponsors</h2>
+            <p class="section-subtitle animate-on-scroll">Discover events that match your sponsor profile</p>
+            
+            <!-- Filter/Search Bar -->
+            <div class="filter-container animate-on-scroll">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Search by event name or category..."
+                    onkeyup="filterEvents()"
+                >
+                <select id="categoryFilter" class="category-filter" onchange="filterEvents()">
+                    <option value="">All Categories</option>
+                    <option value="technology">Technology</option>
+                    <option value="sports">Sports</option>
+                    <option value="music">Music</option>
+                    <option value="business">Business</option>
+                    <option value="education">Education</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="arts">Arts & Culture</option>
+                    <option value="food">Food & Beverage</option>
+                </select>
+            </div>
+            
+            <!-- Sponsor Cards Container -->
+            <div id="sponsorCardsContainer" class="sponsor-cards-container">
+                <!-- Cards will be dynamically generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 EventMatch. All rights reserved.</p>
+        </div>
+    </footer>
+
+   
+</body>
+</html>
+

@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/sponsor/dashboard/page": "app/sponsor/dashboard/page.js",
+  "/login/page": "app/login/page.js",
+  "/auth-callback/page": "app/auth-callback/page.js",
+  "/sponsor/events/page": "app/sponsor/events/page.js",
+  "/sponsor/proposals/page": "app/sponsor/proposals/page.js",
+  "/sponsor/analytics/page": "app/sponsor/analytics/page.js",
+  "/events/page": "app/events/page.js",
+  "/organizer/dashboard/page": "app/organizer/dashboard/page.js",
+  "/organizer/notification/page": "app/organizer/notification/page.js",
+  "/signup/page": "app/signup/page.js"
+}
