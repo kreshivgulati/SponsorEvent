@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { mockEvents, mockSponsors } from "@/frontend/lib/mockData";
+import { mockEvents, mockSponsors } from "@/lib/mockData";
 import Link from "next/link";
 import SponsorCard from "@/components/SponsorCard";
 

@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
 import EventCard from '@/components/EventCard'
-import { mockEvents } from '@/frontend/lib/mockData'
+import { mockEvents } from '@/lib/mockData'
 import Link from 'next/link'
 
 export default function OrganizerEventsPage() {
@@ -46,7 +46,7 @@ export default function OrganizerEventsPage() {
       <Navbar />
       
       <div className="flex-1 flex">
-        <Sidebar type="organizer" />
+        <Sidebar />
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">

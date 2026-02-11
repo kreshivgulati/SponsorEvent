@@ -8,7 +8,7 @@ export default function OrganizerAnalyticsPage() {
       <Navbar />
       
       <div className="flex-1 flex">
-        <Sidebar type="organizer" />
+        <Sidebar  />
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,7 +13,6 @@ import LogoStrip from "@/components/LogoStrip";
 import { mockEvents, mockBrandLogos } from "@/lib/mockData";
 
 /* ================= SLIDES ================= */
-
 const slides = [
   {
     image: "/images/1.png",
@@ -57,11 +57,13 @@ function SimpleSlider({ currentIndex }) {
 }
 
 /* ================= MAIN ================= */
-
 export default function OrganizerDashboard() {
+  const router = useRouter();
+
   const myEvents = mockEvents.slice(0, 3);
   const [index, setIndex] = useState(0);
 
+  
   /* Auto Slide */
   useEffect(() => {
     const timer = setInterval(() => {
@@ -70,24 +72,6 @@ export default function OrganizerDashboard() {
 
     return () => clearInterval(timer);
   }, []);
-
-  /* Scroll Handler */
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-
-    if (!el) return;
-
-    const yOffset = -80;
-    const y =
-      el.getBoundingClientRect().top +
-      window.pageYOffset +
-      yOffset;
-
-    window.scrollTo({
-      top: y,
-      behavior: "smooth",
-    });
-  };
 
   return (
     <div
@@ -106,7 +90,7 @@ export default function OrganizerDashboard() {
       <Navbar />
 
       <div className="flex flex-1">
-        <Sidebar type="organizer" />
+        <Sidebar  />
 
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">

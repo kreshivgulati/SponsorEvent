@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
 import SponsorCard from '@/components/SponsorCard'
-import { mockSponsors } from '@/frontend/lib/mockData'
+import { mockSponsors } from '@/lib/mockData'
 
 export default function OrganizerSponsorsPage() {
   return (
@@ -10,7 +10,7 @@ export default function OrganizerSponsorsPage() {
       <Navbar />
       
       <div className="flex-1 flex">
-        <Sidebar type="organizer" />
+        <Sidebar />
         
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">

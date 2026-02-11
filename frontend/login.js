@@ -1,11 +1,3 @@
-/**
- * Login Page JavaScript
- * 
- * Handles:
- * - Google OAuth login
- * - Email OTP login flow
- * - Role selection after login
- */
 
 const API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
 

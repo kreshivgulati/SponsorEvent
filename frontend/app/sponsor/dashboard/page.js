@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,7 +14,6 @@ import LogoStrip from "@/components/LogoStrip";
 import { mockEvents, mockOrganizerLogos } from "@/lib/mockData";
 
 /* ================= SLIDES (Sponsor-focused) ================= */
-
 const slides = [
   {
     image: "/images/1.png",
@@ -59,8 +60,13 @@ function SimpleSlider({ currentIndex }) {
 /* ================= MAIN ================= */
 
 export default function SponsorDashboard() {
+  const router = useRouter();
+
+  const myEvents = mockEvents.slice(0, 3);
   const recommendedEvents = mockEvents.slice(0, 3);
   const [index, setIndex] = useState(0);
+
+
 
   /* Auto Slide */
   useEffect(() => {
@@ -71,23 +77,6 @@ export default function SponsorDashboard() {
     return () => clearInterval(timer);
   }, []);
 
-  /* Scroll Handler */
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-
-    if (!el) return;
-
-    const yOffset = -80;
-    const y =
-      el.getBoundingClientRect().top +
-      window.pageYOffset +
-      yOffset;
-
-    window.scrollTo({
-      top: y,
-      behavior: "smooth",
-    });
-  };
 
   return (
     <div
@@ -106,7 +95,7 @@ export default function SponsorDashboard() {
       <Navbar />
 
       <div className="flex flex-1">
-        <Sidebar type="sponsor" />
+        <Sidebar />
 
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">
