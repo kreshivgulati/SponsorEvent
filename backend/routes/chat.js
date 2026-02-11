@@ -1,50 +1,104 @@
-// routes/chat.js
 import express from "express";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
-import { authenticateToken  } from "../../frontend/middleware/auth.js";
+import { authenticateToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-/**
- * POST /routes/chat
- * body: { otherUserId }
- */
-router.post("/", authenticateToken, async (req, res) => {
+/* =========================
+   GET ALL CHATS FOR USER
+========================= */
+router.get("/my", authenticateToken, async (req, res) => {
   const { userId, role } = req.user;
-  const { otherUserId } = req.body;
 
-  if (!otherUserId)
-    return res.status(400).json({ message: "Missing other user" });
+  try {
+    let chats;
 
-  const query =
-    role === "sponsor"
-      ? { sponsorId: userId, organizerId: otherUserId }
-      : { sponsorId: otherUserId, organizerId: userId };
+    if (role === "organizer") {
+      chats = await Chat.find({ organizer: userId })
+        .populate("event")
+        .populate("sponsor");
+    } else if (role === "sponsor") {
+      chats = await Chat.find({ sponsor: userId })
+        .populate("event")
+        .populate("organizer");
+    } else {
+      return res.status(403).json({ message: "Invalid role" });
+    }
 
-  let chat = await Chat.findOne(query);
-  if (!chat) chat = await Chat.create(query);
-
-  res.json(chat);
+    res.json(chats);
+  } catch (err) {
+    console.error("GET /my error:", err);
+    res.status(500).json({ message: "Failed to fetch chats" });
+  }
 });
 
-// GET chat messages (HISTORY)
+/* =========================
+   CREATE CHAT
+========================= */
+router.post("/", authenticateToken, async (req, res) => {
+  const { userId, role } = req.user;
+  const { sponsorId, eventId } = req.body;
+
+  if (role !== "organizer") {
+    return res.status(403).json({ message: "Only organizers can start chat" });
+  }
+
+  if (!sponsorId || !eventId) {
+    return res.status(400).json({ message: "Missing sponsorId or eventId" });
+  }
+
+  try {
+    let chat = await Chat.findOne({
+      organizer: userId,
+      sponsor: sponsorId,
+      event: eventId,
+    });
+
+    if (!chat) {
+      chat = await Chat.create({
+        organizer: userId,
+        sponsor: sponsorId,
+        event: eventId,
+      });
+    }
+
+    res.json(chat);
+  } catch (err) {
+    console.error("POST chat error:", err);
+    res.status(500).json({ message: "Failed to create chat" });
+  }
+});
+
+/* =========================
+   GET CHAT MESSAGES
+========================= */
 router.get("/:chatId/messages", authenticateToken, async (req, res) => {
   const { chatId } = req.params;
   const { userId } = req.user;
 
-  const chat = await Chat.findById(chatId);
-  if (!chat) return res.status(404).json({ message: "Chat not found" });
+  try {
+    const chat = await Chat.findById(chatId);
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
 
-  // Security check
-  if (
-    chat.sponsorId.toString() !== userId &&
-    chat.organizerId.toString() !== userId
-  ) {
-    return res.status(403).json({ message: "Forbidden" });
+    if (
+      chat.sponsor.toString() !== userId &&
+      chat.organizer.toString() !== userId
+    ) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const messages = await Message.find({ chatId })
+      .sort({ createdAt: 1 })
+      .lean();
+
+    res.json(messages);
+  } catch (err) {
+    console.error("GET messages error:", err);
+    res.status(500).json({ message: "Failed to fetch messages" });
   }
-
-  const messages = await Message.find({ chatId }).sort("createdAt");
-  res.json(messages);
 });
+
 export default router;

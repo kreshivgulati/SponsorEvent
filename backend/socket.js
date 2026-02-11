@@ -6,10 +6,6 @@ export const setupSocket = (io) => {
       socket.join(chatId);
     });
 
-    socket.on("send-message", ({ chatId, message }) => {
-      socket.to(chatId).emit("receive-message", message);
-    });
-
     socket.on("disconnect", () => {
       console.log("❌ Socket disconnected:", socket.id);
     });

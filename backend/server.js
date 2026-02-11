@@ -13,6 +13,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import interestRoutes from "./routes/interest.js";
+import { setIO } from "./socketInstance.js";
 
 import { setupSocket } from "./socket.js";
 
@@ -22,6 +23,7 @@ import eventRoutes from "./routes/events.js";
 import sponsorRoutes from "./routes/sponsors.js";
 import matchRoutes from "./routes/match.js";
 import chatRoutes from "./routes/chat.js";
+import messageRoutes from "./routes/message.js";
 
 // Models
 import User from "./models/User.js";
@@ -33,9 +35,9 @@ dotenv.config();
 // =======================
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 const server = http.createServer(app);
-const io = new Server(server, {
+
+export const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
     credentials: true,
@@ -44,6 +46,9 @@ const io = new Server(server, {
 
 // Socket setup
 setupSocket(io);
+
+
+
 
 // =======================
 // MongoDB
@@ -160,6 +165,7 @@ app.use("/api/sponsors", sponsorRoutes);
 app.use("/api/match", matchRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/interests", interestRoutes);
+app.use("/api/message", messageRoutes);
 
 // =======================
 // Start Server
