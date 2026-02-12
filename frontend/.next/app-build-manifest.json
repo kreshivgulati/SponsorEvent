@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/organizer/dashboard/page": [
+    "/events/create/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/organizer/dashboard/page.js"
+      "static/chunks/app/events/create/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -11,40 +11,35 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/sponsor/dashboard/page": [
+    "/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/sponsor/dashboard/page.js"
+      "static/chunks/app/login/page.js"
+    ],
+    "/signup/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/signup/page.js"
     ],
     "/events/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/events/page.js"
     ],
+    "/organizer/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/organizer/dashboard/page.js"
+    ],
     "/organizer/notification/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/organizer/notification/page.js"
     ],
-    "/organizer/chat/[chatId]/page": [
+    "/organizer/events/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/organizer/chat/[chatId]/page.js"
-    ],
-    "/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/login/page.js"
-    ],
-    "/sponsor/chats/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/sponsor/chats/page.js"
-    ],
-    "/sponsor/chat/[chatId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/sponsor/chat/[chatId]/page.js"
+      "static/chunks/app/organizer/events/page.js"
     ]
   }
 }

@@ -1,10 +1,7 @@
 {
-  "/organizer/notification/page": "app/organizer/notification/page.js",
-  "/organizer/chat/[chatId]/page": "app/organizer/chat/[chatId]/page.js",
-  "/login/page": "app/login/page.js",
-  "/sponsor/chats/page": "app/sponsor/chats/page.js",
-  "/sponsor/chat/[chatId]/page": "app/sponsor/chat/[chatId]/page.js",
-  "/organizer/dashboard/page": "app/organizer/dashboard/page.js",
   "/events/page": "app/events/page.js",
-  "/sponsor/dashboard/page": "app/sponsor/dashboard/page.js"
+  "/login/page": "app/login/page.js",
+  "/organizer/notification/page": "app/organizer/notification/page.js",
+  "/organizer/events/page": "app/organizer/events/page.js",
+  "/organizer/dashboard/page": "app/organizer/dashboard/page.js"
 }

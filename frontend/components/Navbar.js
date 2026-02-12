@@ -1,43 +1,83 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(null)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+
+  const dropdownRef = useRef(null)
   const router = useRouter()
 
-  // 🔹 Always sync auth state
+  /* ================= AUTH CHECK ================= */
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('token')
-      setIsLoggedIn(!!token)
+      const token = localStorage.getItem("token")
+
+      if (!token) {
+        setIsLoggedIn(false)
+        setUser(null)
+        return
+      }
+
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]))
+
+        setIsLoggedIn(true)
+        setUser({
+          role: payload.role,
+          email: payload.email,
+        })
+      } catch {
+        setIsLoggedIn(false)
+        setUser(null)
+      }
     }
 
     checkAuth()
-    window.addEventListener('storage', checkAuth)
+    window.addEventListener("storage", checkAuth)
 
-    const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', onScroll)
-
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('storage', checkAuth)
-    }
+    return () => window.removeEventListener("storage", checkAuth)
   }, [])
 
+  /* ================= SCROLL SHADOW ================= */
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  /* ================= CLICK OUTSIDE ================= */
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  /* ================= LOGOUT ================= */
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.replace("/login");
-  };
-  
+    localStorage.removeItem("token")
+    router.replace("/login")
+  }
+
   return (
     <nav
       className={`sticky top-0 z-50 bg-white transition-shadow ${
-        scrolled ? 'shadow-md' : 'border-b'
+        scrolled ? "shadow-md" : "border-b"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6">
@@ -45,8 +85,12 @@ export default function Navbar() {
 
           {/* LOGO */}
           <Link href="/" className="flex items-baseline gap-1.5">
-            <span className="text-xl font-bold text-gray-900">SponsorMatch</span>
-            <span className="text-xs font-medium text-gray-500">by LinkLogic</span>
+            <span className="text-xl font-bold text-gray-900">
+              SponsorMatch
+            </span>
+            <span className="text-xs font-medium text-gray-500">
+              by LinkLogic
+            </span>
           </Link>
 
           {/* DESKTOP NAV */}
@@ -56,7 +100,7 @@ export default function Navbar() {
             <Link href="/sponsor/dashboard" className="hover:text-gray-900">Sponsors</Link>
           </div>
 
-          {/* RIGHT ACTIONS */}
+          {/* RIGHT SIDE */}
           <div className="hidden md:flex items-center gap-4">
             {!isLoggedIn ? (
               <>
@@ -67,26 +111,70 @@ export default function Navbar() {
                   href="/signup"
                   className="btn-cta-gradient rounded-full text-sm"
                 >
-                  <span className="text-gradient">Create Free Account</span>
+                  <span className="text-gradient">
+                    Create Free Account
+                  </span>
                 </Link>
               </>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="text-red-600 font-semibold text-sm"
-              >
-                Logout
-              </button>
+              <div className="relative" ref={dropdownRef}>
+                {/* Avatar */}
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="w-9 h-9 rounded-full bg-indigo-600 hover:bg-indigo-700 transition text-white flex items-center justify-center font-semibold"
+                >
+                  {user?.role?.[0]?.toUpperCase()}
+                </button>
+
+                {/* Dropdown */}
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-3 w-60 bg-white border rounded-xl shadow-xl z-50 overflow-hidden">
+
+                    {/* Header */}
+                    <div className="px-4 py-4 border-b bg-gray-50">
+                      <p className="text-xs text-gray-500 uppercase tracking-wide">
+                        Logged in as
+                      </p>
+                      <p className="font-semibold text-gray-800">
+                        {user?.role?.[0]?.toUpperCase() + user?.role?.slice(1)}
+                      </p>
+                      <p className="text-sm text-gray-600 truncate">
+                        {user?.email}
+                      </p>
+                    </div>
+
+                    {/* Dashboard */}
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false)
+                        router.push(`/${user.role}/dashboard`)
+                      }}
+                      className="block w-full text-left px-4 py-3 hover:bg-gray-100 transition"
+                    >
+                      Dashboard
+                    </button>
+
+                    {/* Logout */}
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 transition"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* MOBILE BUTTON */}
           <button
             className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100"
             onClick={() => setIsOpen(!isOpen)}
           >
             ☰
           </button>
+
         </div>
       </div>
 
@@ -106,7 +194,9 @@ export default function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className="btn-cta-gradient block text-center py-2 rounded-full"
                 >
-                  <span className="text-gradient">Create Free Account</span>
+                  <span className="text-gradient">
+                    Create Free Account
+                  </span>
                 </Link>
               </>
             ) : (
