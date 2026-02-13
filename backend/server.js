@@ -14,6 +14,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import interestRoutes from "./routes/interest.js";
 import { setIO } from "./socketInstance.js";
+import profileRoutes from "./routes/profile.js";
+
 
 import { setupSocket } from "./socket.js";
 
@@ -166,6 +168,7 @@ app.use("/api/match", matchRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/interests", interestRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/profile", profileRoutes);
 
 // =======================
 // Start Server

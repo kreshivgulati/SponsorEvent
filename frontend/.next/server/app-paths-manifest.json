@@ -1,7 +1,4 @@
 {
-  "/events/page": "app/events/page.js",
-  "/login/page": "app/login/page.js",
-  "/organizer/notification/page": "app/organizer/notification/page.js",
-  "/organizer/events/page": "app/organizer/events/page.js",
-  "/organizer/dashboard/page": "app/organizer/dashboard/page.js"
+  "/events/[id]/page": "app/events/[id]/page.js",
+  "/events/page": "app/events/page.js"
 }

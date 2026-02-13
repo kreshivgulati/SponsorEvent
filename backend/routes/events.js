@@ -21,14 +21,31 @@ function requireOrganizer(req, res, next) {
 // =======================
 router.post("/", authenticateToken, requireOrganizer, async (req, res) => {
   try {
-    const event = await Event.create({
-      title: req.body.title,
-      description: req.body.description,
-      date: req.body.date,
-      location: req.body.location,
-      budget: req.body.budget,
-      organizer: req.user.id, // ✅ FIX
-    });
+  const event = await Event.create({
+  title: req.body.title,
+  description: req.body.description,
+  date: req.body.date,
+  location: req.body.location,
+  budget: req.body.budget,
+  attendees: req.body.attendees,
+  type: req.body.type,
+  audience: req.body.audience,
+  image: req.body.image,
+
+  socialReach: {
+    instagram: req.body.socialReach?.instagram,
+    linkedin: req.body.socialReach?.linkedin,
+  },
+
+  pastExperience: {
+    isRecurring: req.body.pastExperience?.isRecurring,
+    editions: req.body.pastExperience?.editions,
+    highestAttendance: req.body.pastExperience?.highestAttendance,
+    notableSponsors: req.body.pastExperience?.notableSponsors,
+  },
+
+  organizer: req.user.id,
+});;
 
     res.status(201).json({ success: true, event });
   } catch (err) {
@@ -68,5 +85,21 @@ router.get("/", async (req, res) => {
   const events = await Event.find().populate("organizer", "name email");
   res.json({ success: true, events });
 });
+// =======================
+// Get single event (PUBLIC)
+// =======================
+router.get("/:id", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id)
+      .populate("organizer", "name email");
 
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.json({ success: true, event });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 export default router;

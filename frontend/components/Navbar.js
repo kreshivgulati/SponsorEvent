@@ -142,6 +142,13 @@ export default function Navbar() {
                         {user?.email}
                       </p>
                     </div>
+                    {/* About Profile */}
+                    <button
+                      onClick={() => router.push(`/${user.role}/profile`)}
+                      className="block w-full text-left px-4 py-3 hover:bg-gray-100 transition"
+                    >
+                      About
+                    </button>
 
                     {/* Dashboard */}
                     <button

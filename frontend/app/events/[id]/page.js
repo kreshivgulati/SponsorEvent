@@ -3,25 +3,54 @@
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { mockEvents, mockSponsors } from "@/lib/mockData";
 import Link from "next/link";
-import SponsorCard from "@/components/SponsorCard";
+import { useEffect, useState } from "react";
 
 export default function EventDetailsPage({ params }) {
   const router = useRouter();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // ⚠️ eventId must match MongoDB _id for backend chat
-  const event = mockEvents.find(e => e.id === params.eventId);
-  const eventSponsors = mockSponsors.filter(s =>
-    event?.sponsors?.includes(s.id)
-  );
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/events/${params.id}`
+        );
+        const data = await res.json();
 
+        if (data.success) {
+          setEvent(data.event);
+        }
+      } catch (err) {
+        console.error("Failed to fetch event", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [params.id]);
+
+  // Loading State
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-600 text-lg">Loading event...</p>
+      </div>
+    );
+  }
+
+  // Not Found
   if (!event) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Event Not Found</h1>
-          <Link href="/events" className="btn-primary">
+          <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
+          <Link
+            href="/events"
+            className="bg-gray-900 text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition"
+          >
             Back to Events
           </Link>
         </div>
@@ -29,11 +58,8 @@ export default function EventDetailsPage({ params }) {
     );
   }
 
-  // ======================
-  // START CHAT (SPONSOR)
-  // ======================
   const startChat = async () => {
-    const token = localStorage.getItem("token"); // ✅ MUST MATCH auth-callback
+    const token = localStorage.getItem("token");
 
     if (!token) {
       alert("Please login as sponsor");
@@ -42,17 +68,21 @@ export default function EventDetailsPage({ params }) {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/chats/initiate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          eventId: event.id, // ⚠️ must be MongoDB _id
-          initialMessage: "Hi! I'm interested in sponsoring this event.",
-        }),
-      });
+      const res = await fetch(
+        "http://localhost:5000/api/chats/initiate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            eventId: event._id,
+            initialMessage:
+              "Hi! I'm interested in sponsoring this event.",
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -61,7 +91,6 @@ export default function EventDetailsPage({ params }) {
         return;
       }
 
-      // ✅ redirect to chat screen
       router.push(`/chats/${data.chat._id}`);
     } catch (err) {
       console.error(err);
@@ -70,7 +99,7 @@ export default function EventDetailsPage({ params }) {
   };
 
   const formatDate = (dateString) =>
-    new Date(dateString).toLocaleDateString("en-US", {
+    new Date(dateString).toLocaleDateString("en-IN", {
       weekday: "long",
       month: "long",
       day: "numeric",
@@ -85,81 +114,117 @@ export default function EventDetailsPage({ params }) {
     }).format(amount);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
       <Navbar />
 
-      <div className="flex-1 bg-black">
-        {/* Hero */}
-        <div className="relative h-96 w-full">
-          <img
-            src={event.image}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="absolute bottom-0 p-8 text-white max-w-7xl mx-auto">
-            <span className="bg-green-600 px-3 py-1 rounded-full text-sm">
-              {event.category}
-            </span>
-            <h1 className="text-4xl font-bold mt-3">{event.title}</h1>
-          </div>
-        </div>
+      {/* Hero Section */}
+      {/* Hero */}
+<div className="relative w-full h-[420px] overflow-hidden">
+  <img
+    src={event.image}
+    alt={event.title}
+    className="absolute inset-0 w-full h-full object-contain bg-black"
+  />
 
-        {/* CHAT BUTTON */}
-        <div className="max-w-7xl mx-auto px-4 mt-6">
-          <button
-            onClick={startChat}
-            className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700"
-          >
-            💬 Message Organizer
-          </button>
-        </div>
+  <div className="absolute inset-0 bg-black/50" />
 
-        <div className="max-w-7xl mx-auto px-4 py-12 grid lg:grid-cols-3 gap-8">
-          {/* MAIN */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="card">
-              <h2 className="text-2xl font-bold mb-4">About This Event</h2>
-              <p>{event.description}</p>
-            </div>
+  <div className="absolute bottom-8 left-8 text-white">
+    <span className="bg-indigo-600 px-3 py-1 rounded-full text-sm">
+      {event.type}
+    </span>
+    <h1 className="text-4xl font-bold mt-3">
+      {event.title}
+    </h1>
+  </div>
+</div>
 
-            <div className="card">
-              <h2 className="text-2xl font-bold mb-6">Event Details</h2>
-              <p>Date: {formatDate(event.date)}</p>
-              <p>Location: {event.location}</p>
-              <p>Attendees: {event.expectedAttendees}</p>
-              <p>Budget: {formatCurrency(event.budget)}</p>
-            </div>
+      {/* Chat Button */}
+      <div className="max-w-6xl mx-auto px-4 mt-8">
+        <button
+          onClick={startChat}
+          className="bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+        >
+          💬 Message Organizer
+        </button>
+      </div>
 
-            <div className="card">
-              <h2 className="text-2xl font-bold mb-4">Organizer</h2>
-              <p>{event.organizer.name}</p>
-              <p>{event.organizer.email}</p>
-            </div>
+      {/* Content Section */}
+      <div className="max-w-6xl mx-auto px-4 py-12 grid lg:grid-cols-3 gap-10">
+        {/* Left Content */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="bg-white p-8 rounded-xl shadow border">
+            <h2 className="text-2xl font-bold mb-4">
+              About This Event
+            </h2>
+            <p className="text-gray-700">
+              {event.description}
+            </p>
           </div>
 
-          {/* SIDEBAR */}
-          <div className="card sticky top-20">
-            <h3 className="text-xl font-bold mb-4">
-              Sponsorship Opportunity
-            </h3>
-            <p className="mb-6">
-              Connect with the organizer to discuss partnerships.
+          <div className="bg-white p-8 rounded-xl shadow border space-y-3">
+            <h2 className="text-2xl font-bold mb-4">
+              Event Details
+            </h2>
+            <p>Date: {formatDate(event.date)}</p>
+            <p>Location: {event.location}</p>
+            <p>Budget: {formatCurrency(event.budget)}</p>
+            <p>Expected Attendees: {event.attendees}</p>
+            <p>Target Audience: {event.audience?.join?.(", ") || event.audience}</p>
+
+            <div className="pt-4">
+              <h3 className="font-semibold mb-2">
+                Social Reach
+              </h3>
+              <p>Instagram: {event.socialReach?.instagram || 0}</p>
+              <p>LinkedIn: {event.socialReach?.linkedin || 0}</p>
+             
+            </div>
+
+            <div className="pt-4">
+              <h3 className="font-semibold mb-2">
+                Past Experience
+              </h3>
+              <p>
+                Recurring:{" "}
+                {event.pastExperience?.isRecurring || "No"}
+              </p>
+              <p>
+                Editions:{" "}
+                {event.pastExperience?.editions || 0}
+              </p>
+              <p>
+                Highest Attendance:{" "}
+                {event.pastExperience?.highestAttendance || 0}
+              </p>
+              <p>
+                Notable Sponsors:{" "}
+                {event.pastExperience?.notableSponsors || "N/A"}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-xl shadow border">
+            <h2 className="text-2xl font-bold mb-4">
+              Organizer
+            </h2>
+            <p>{event.organizer?.name}</p>
+            <p className="text-gray-600">
+              {event.organizer?.email}
             </p>
           </div>
         </div>
 
-        {/* SPONSORS */}
-        {eventSponsors.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 pb-12">
-            <h2 className="text-3xl font-bold mb-6">Current Sponsors</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {eventSponsors.map((s) => (
-                <SponsorCard key={s.id} sponsor={s} />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Right Sidebar */}
+        <div className="bg-white p-8 rounded-xl shadow border h-fit">
+          <h3 className="text-xl font-bold mb-4">
+            Sponsorship Opportunity
+          </h3>
+          <p className="text-gray-600">
+            Interested in partnering with this event?
+            Connect with the organizer to explore
+            sponsorship opportunities.
+          </p>
+        </div>
       </div>
 
       <Footer />

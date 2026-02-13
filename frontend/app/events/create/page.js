@@ -1,102 +1,144 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Link from 'next/link'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Link from "next/link";
 
 export default function CreateEventPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    date: '',
-    location: '',
-    budget: '',
-  })
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    budget: "",
+    attendees: "",
+    type: "",
+    audience: "",
+    image: "",
+    socialReach: {
+      instagram: "",
+      linkedin: "",
+      averagePostReach: "",
+    },
+    pastExperience: {
+      isRecurring: false,
+      editions: "",
+      highestAttendance: "",
+      notableSponsors: "",
+    },
+  });
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  // ✅ Block non-logged-in users
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (!token) {
-      alert('Please login as organizer')
-      router.push('/login')
+      alert("Please login as organizer");
+      router.push("/login");
     }
-  }, [router])
+  }, [router]);
 
+  // 🔹 Normal Fields
   const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }))
-  }
+    const { name, value } = e.target;
 
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 🔹 Social Reach Fields
+  const handleSocialChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      socialReach: {
+        ...prev.socialReach,
+        [name]: value,
+      },
+    }));
+  };
+
+  // 🔹 Past Experience Fields
+  const handleExperienceChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      pastExperience: {
+        ...prev.pastExperience,
+        [name]: value,
+      },
+    }));
+  };
+console.log("FORM SUBMIT WORKING");
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem("token");
 
-      if (!token) {
-        alert('Session expired. Please login again.')
-        router.push('/login')
-        return
-      }
-
-      const res = await fetch('http://localhost:5000/api/events', {
-        method: 'POST',
+      const res = await fetch("http://localhost:5000/api/events", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          date: formData.date,
-          location: formData.location,
-          budget: Number(formData.budget),
-        }),
-      })
+        body: JSON.stringify(formData),
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || 'Failed to create event')
-        return
+        alert(data.message || "Failed to create event");
+        return;
       }
 
-      alert('✅ Event created successfully!')
-      router.push('/events')
-
+      alert("✅ Event created successfully!");
+      router.push("/events");
     } catch (err) {
-      console.error(err)
-      alert('Server error')
+      console.error(err);
+      alert("Server error");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
       <Navbar />
 
-      <div className="flex-1 py-12 px-4">
-        <div className="max-w-3xl mx-auto">
-          <Link href="/events" className="text-primary-500 mb-4 inline-block">
+<div className="flex-1 py-16 px-4">
+  <div className="max-w-4xl mx-auto">
+          <Link href="/events" className="text-indigo-600 mb-4 inline-block">
             ← Back to Events
           </Link>
 
-          <h1 className="text-4xl font-bold mb-6">Create New Event</h1>
+          <h1 className="text-4xl font-bold text-gray-900">
+  Create New Event
+</h1>
+<p className="text-gray-500 mt-2">
+  Provide the details below to attract sponsors.
+</p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="bg-gray-900 p-8 rounded-xl space-y-6"
-          >
+<form
+  onSubmit={handleSubmit}
+  className="bg-white p-12 rounded-3xl shadow-md border border-gray-200 space-y-8"
+>
+  {/* SECTION 1 */}
+<h2 className="text-lg font-semibold text-gray-900 mt-6">
+  
+      Basic Information
+  </h2>
+  <hr className="mt-3 border-gray-200" />
+
             <input
               type="text"
               name="title"
@@ -111,7 +153,7 @@ export default function CreateEventPage() {
               name="description"
               placeholder="Event Description"
               className="input-field"
-              rows={5}
+              rows={4}
               value={formData.description}
               onChange={handleChange}
               required
@@ -146,12 +188,108 @@ export default function CreateEventPage() {
               required
             />
 
+            <input
+              type="number"
+              name="attendees"
+              placeholder="Expected Attendees"
+              className="input-field"
+              value={formData.attendees}
+              onChange={handleChange}
+            />
+
+            <input
+              type="text"
+              name="image"
+              placeholder="Event Banner Image URL"
+              className="input-field"
+              value={formData.image}
+              onChange={handleChange}
+            />
+<h2 className="text-lg font-semibold text-gray-900 mt-6">
+      Audience & Reach
+  </h2>
+<hr className="mt-3 border-gray-200" />
+            <input
+              type="number"
+              name="instagram"
+              placeholder="Instagram Followers"
+              className="input-field"
+              value={formData.socialReach.instagram}
+              onChange={handleSocialChange}
+            />
+
+            <input
+              type="number"
+              name="linkedin"
+              placeholder="LinkedIn Followers"
+              className="input-field"
+              value={formData.socialReach.linkedin}
+              onChange={handleSocialChange}
+            />
+
+            <input
+              type="number"
+              name="averagePostReach"
+              placeholder="Average Post Reach"
+              className="input-field"
+              value={formData.socialReach.averagePostReach}
+              onChange={handleSocialChange}
+            />
+
+            <h3 className="text-lg font-semibold pt-4">
+              Past Event Experience
+            </h3>
+
+           <select
+  name="isRecurring"
+  value={formData.pastExperience.isRecurring}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      pastExperience: {
+        ...prev.pastExperience,
+        isRecurring: e.target.value === "true",
+      },
+    }))
+  }
+  className="input-field"
+>
+  <option value="">Is this recurring?</option>
+  <option value="true">Yes</option>
+  <option value="false">No</option>
+</select>
+            <input
+              type="number"
+              name="editions"
+              placeholder="Number of Past Editions"
+              className="input-field"
+              value={formData.pastExperience.editions}
+              onChange={handleExperienceChange}
+            />
+
+            <input
+              type="number"
+              name="highestAttendance"
+              placeholder="Highest Past Attendance"
+              className="input-field"
+              value={formData.pastExperience.highestAttendance}
+              onChange={handleExperienceChange}
+            />
+
+            <input
+              type="text"
+              name="notableSponsors"
+              placeholder="Notable Past Sponsors"
+              className="input-field"
+              value={formData.pastExperience.notableSponsors}
+              onChange={handleExperienceChange}
+            />
+
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full"
-            >
-              {loading ? 'Creating...' : 'Create Event'}
+className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-md"            >
+              {loading ? "Creating..." : "Create Event"}
             </button>
           </form>
         </div>
@@ -159,5 +297,5 @@ export default function CreateEventPage() {
 
       <Footer />
     </div>
-  )
+  );
 }

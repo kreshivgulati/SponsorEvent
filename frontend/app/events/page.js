@@ -9,6 +9,11 @@ export default function EventsPage() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState(null)
+  const [attendees, setAttendees] = useState("");
+const [type, setType] = useState("");
+const [audience, setAudience] = useState("");
+const [reach, setReach] = useState("");
+const [experience, setExperience] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem('authToken')
@@ -134,6 +139,7 @@ export default function EventsPage() {
                     <p>Location: {event.location}</p>
                     <p>Date: {new Date(event.date).toDateString()}</p>
                     <p>Budget: ₹{event.budget?.toLocaleString()}</p>
+                    
                   </div>
 
                   <p className="text-sm text-gray-400 mt-2">
