@@ -1,7 +1,7 @@
 import express from "express";
 import Sponsor from "../models/Sponsor.js";
 import { authenticateToken } from "../../frontend/middleware/auth.js";
-
+import User from "../models/User.js"
 const router = express.Router();
 
 // =======================
@@ -23,9 +23,16 @@ router.post("/", authenticateToken, async (req, res) => {
 // =======================
 // Get all sponsors
 // =======================
+
+
+
+// Get all sponsors
 router.get("/", async (req, res) => {
   try {
-    const sponsors = await Sponsor.find();
+    const sponsors = await User.find({ role: "sponsor" })
+      .select("-password") // remove password
+      .sort({ createdAt: -1 });
+
     res.json({ success: true, sponsors });
   } catch (err) {
     res.status(500).json({ message: err.message });

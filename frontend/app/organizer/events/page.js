@@ -1,37 +1,52 @@
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Sidebar from '@/components/Sidebar'
-import EventCard from '@/components/EventCard'
-import Link from 'next/link'
-import { connectDB } from '@/lib/mongoose'
-import Event from '@/models/Event'
+"use client";
 
-export default async function OrganizerEventsPage() {
+import { useEffect, useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
+import EventCard from "@/components/EventCard";
+import Link from "next/link";
 
-  // Connect to DB
-  await connectDB()
+export default function OrganizerEventsPage() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch events (later filter by organizerId)
-  const events = await Event.find().sort({ createdAt: -1 }).lean()
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          "http://localhost:5000/api/events/organizer",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+          setEvents(data.events);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
-    <div
-      className="
-        min-h-screen
-        flex
-        flex-col
-        text-gray-900
-        bg-gradient-to-b
-        from-[#F8FBFF]
-        via-white
-        to-[#F3F7FF]
-      "
-    >
+    <div className="min-h-screen flex flex-col text-gray-900 bg-gradient-to-b from-[#F8FBFF] via-white to-[#F3F7FF]">
       <Navbar />
-      
+
       <div className="flex-1 flex">
         <Sidebar />
-        
+
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto">
 
@@ -47,40 +62,28 @@ export default async function OrganizerEventsPage() {
               </Link>
             </div>
 
-            {/* Filters (UI only for now) */}
-            <div className="mb-6 flex flex-wrap gap-4">
-              <select className="input-field w-full sm:w-auto">
-                <option>All Status</option>
-                <option>Active</option>
-                <option>Draft</option>
-                <option>Completed</option>
-              </select>
-              <select className="input-field w-full sm:w-auto">
-                <option>All Categories</option>
-                <option>Technology</option>
-                <option>Business</option>
-                <option>Startup</option>
-              </select>
-            </div>
-
-            {/* Events Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {events.length > 0 ? (
-                events.map((event) => (
-                  <EventCard key={event._id.toString()} event={event} />
-                ))
-              ) : (
-                <div className="col-span-full text-center text-gray-500 py-10">
-                  No events found. Create your first event 🚀
-                </div>
-              )}
-            </div>
-
+            {loading ? (
+              <div className="text-center py-10 text-gray-500">
+                Loading events...
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {events.length > 0 ? (
+                  events.map((event) => (
+                    <EventCard key={event._id} event={event} />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center text-gray-500 py-10">
+                    No events found. Create your first event 🚀
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </main>
       </div>
-      
+
       <Footer />
     </div>
-  )
+  );
 }

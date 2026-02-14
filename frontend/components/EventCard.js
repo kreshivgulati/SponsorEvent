@@ -27,29 +27,20 @@ export default function EventCard({ event }) {
       className="block bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition duration-200 overflow-hidden"
     >
       {/* Image */}
-    <div className="relative h-48 w-full">
+  <div className="relative h-48 w-full mb-4 rounded-lg overflow-hidden bg-gray-200">
   {event.image ? (
-    event.image.startsWith("data:") ? (
-      <img
-        src={event.image}
-        alt={event.title}
-        className="w-full h-full object-cover"
-      />
-    ) : (
-      <Image
-        src={event.image}
-        alt={event.title}
-        fill
-        className="object-cover"
-      />
-    )
+    <Image
+      src={event.image}
+      alt={event.title}
+      fill
+      className="object-cover"
+    />
   ) : (
-    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+    <div className="flex items-center justify-center h-full text-gray-500 text-sm">
       No Image
     </div>
   )}
 </div>
-
       {/* Content */}
       <div className="p-5">
         <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
@@ -70,11 +61,13 @@ export default function EventCard({ event }) {
         )}
 
         {/* Date & Location */}
-        <div className="flex justify-between text-sm text-gray-500 mb-4">
-          <span>{formatDate(event.date)}</span>
-          <span>{event.location}</span>
-        </div>
-
+       <div className="flex justify-between text-sm text-gray-500 mb-4">
+  <span>
+    {formatDate(event.startDate)}
+    {event.endDate && ` - ${formatDate(event.endDate)}`}
+  </span>
+  <span>{event.location}</span>
+</div>
         {/* Budget & Attendees */}
         <div className="flex justify-between items-center pt-4 border-t border-gray-200">
           <div>

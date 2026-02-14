@@ -165,7 +165,7 @@ export default function EventDetailsPage({ params }) {
             <h2 className="text-2xl font-bold mb-4">
               Event Details
             </h2>
-            <p>Date: {formatDate(event.date)}</p>
+            <p>Date: {formatDate(event.startDate)} - {formatDate(event.endDate)}</p>
             <p>Location: {event.location}</p>
             <p>Budget: {formatCurrency(event.budget)}</p>
             <p>Expected Attendees: {event.attendees}</p>
@@ -185,9 +185,7 @@ export default function EventDetailsPage({ params }) {
                 Past Experience
               </h3>
               <p>
-                Recurring:{" "}
-                {event.pastExperience?.isRecurring || "No"}
-              </p>
+Recurring: {event.pastExperience?.isRecurring ? "Yes" : "No"}              </p>
               <p>
                 Editions:{" "}
                 {event.pastExperience?.editions || 0}

@@ -15,10 +15,12 @@ router.get("/", authenticateToken, async (req, res) => {
   const interests = await Interest.find({
     organizer: req.user.id,
   })
-    .populate("event", "title date")
+    .populate("event", "title startDate endDate")
     .populate("sponsor", "name email");
 
-  res.json({ success: true, interests });
-});
+  // 🔥 Remove interests where event is deleted
+  const validInterests = interests.filter(i => i.event !== null);
 
+  res.json({ success: true, interests: validInterests });
+});
 export default router;

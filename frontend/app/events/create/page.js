@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-
+import Sidebar from "@/components/Sidebar";
 export default function CreateEventPage() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    date: "",
+      startDate: "",
+  endDate: "",
     location: "",
     budget: "",
     attendees: "",
@@ -84,7 +85,11 @@ console.log("FORM SUBMIT WORKING");
 
     try {
       const token = localStorage.getItem("token");
-
+      if (new Date(formData.endDate) < new Date(formData.startDate)) {
+  alert("End date cannot be before start date");
+  setLoading(false);
+  return;
+}
       const res = await fetch("http://localhost:5000/api/events", {
         method: "POST",
         headers: {
@@ -115,8 +120,14 @@ console.log("FORM SUBMIT WORKING");
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
       <Navbar />
 
-<div className="flex-1 py-16 px-4">
-  <div className="max-w-4xl mx-auto">
+  <div className="flex flex-1">
+  
+  {/* Sidebar on the left */}
+  <Sidebar />
+
+  {/* Main Content on the right */}
+  <main className="flex-1 p-8 overflow-y-auto">
+    <div className="max-w-4xl mx-auto">
           <Link href="/events" className="text-indigo-600 mb-4 inline-block">
             ← Back to Events
           </Link>
@@ -159,14 +170,35 @@ console.log("FORM SUBMIT WORKING");
               required
             />
 
-            <input
-              type="date"
-              name="date"
-              className="input-field"
-              value={formData.date}
-              onChange={handleChange}
-              required
-            />
+           <div className="space-y-4">
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      Start Date
+    </label>
+    <input
+      type="date"
+      name="startDate"
+      className="input-field"
+      value={formData.startDate}
+      onChange={handleChange}
+      required
+    />
+  </div>
+
+  <div>
+    <label className="block text-sm font-medium mb-1">
+      End Date
+    </label>
+    <input
+      type="date"
+      name="endDate"
+      className="input-field"
+      value={formData.endDate}
+      onChange={handleChange}
+      required
+    />
+  </div>
+</div>
 
             <input
               type="text"
@@ -227,63 +259,64 @@ console.log("FORM SUBMIT WORKING");
               onChange={handleSocialChange}
             />
 
-            <input
-              type="number"
-              name="averagePostReach"
-              placeholder="Average Post Reach"
-              className="input-field"
-              value={formData.socialReach.averagePostReach}
-              onChange={handleSocialChange}
-            />
+           
 
             <h3 className="text-lg font-semibold pt-4">
               Past Event Experience
             </h3>
 
-           <select
-  name="isRecurring"
-  value={formData.pastExperience.isRecurring}
-  onChange={(e) =>
+          <select
+  value={formData.pastExperience.isRecurring ? "true" : "false"}
+  onChange={(e) => {
+    const isRecurring = e.target.value === "true";
+
     setFormData((prev) => ({
       ...prev,
       pastExperience: {
         ...prev.pastExperience,
-        isRecurring: e.target.value === "true",
+        isRecurring,
+        // clear extra fields if switched to No
+        editions: isRecurring ? prev.pastExperience.editions : "",
+        highestAttendance: isRecurring ? prev.pastExperience.highestAttendance : "",
+        notableSponsors: isRecurring ? prev.pastExperience.notableSponsors : "",
       },
-    }))
-  }
+    }));
+  }}
   className="input-field"
 >
-  <option value="">Is this recurring?</option>
-  <option value="true">Yes</option>
   <option value="false">No</option>
+  <option value="true">Yes</option>
 </select>
-            <input
-              type="number"
-              name="editions"
-              placeholder="Number of Past Editions"
-              className="input-field"
-              value={formData.pastExperience.editions}
-              onChange={handleExperienceChange}
-            />
+           {formData.pastExperience.isRecurring && (
+  <>
+    <input
+      type="number"
+      name="editions"
+      placeholder="Number of Past Editions"
+      className="input-field"
+      value={formData.pastExperience.editions}
+      onChange={handleExperienceChange}
+    />
 
-            <input
-              type="number"
-              name="highestAttendance"
-              placeholder="Highest Past Attendance"
-              className="input-field"
-              value={formData.pastExperience.highestAttendance}
-              onChange={handleExperienceChange}
-            />
+    <input
+      type="number"
+      name="highestAttendance"
+      placeholder="Highest Past Attendance"
+      className="input-field"
+      value={formData.pastExperience.highestAttendance}
+      onChange={handleExperienceChange}
+    />
 
-            <input
-              type="text"
-              name="notableSponsors"
-              placeholder="Notable Past Sponsors"
-              className="input-field"
-              value={formData.pastExperience.notableSponsors}
-              onChange={handleExperienceChange}
-            />
+    <input
+      type="text"
+      name="notableSponsors"
+      placeholder="Notable Past Sponsors"
+      className="input-field"
+      value={formData.pastExperience.notableSponsors}
+      onChange={handleExperienceChange}
+    />
+  </>
+)}
 
             <button
               type="submit"
@@ -292,10 +325,11 @@ className="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover
               {loading ? "Creating..." : "Create Event"}
             </button>
           </form>
-        </div>
-      </div>
+        </div> {/* max-w-4xl */}
+      </main>
+    </div> {/* flex container */}
 
-      <Footer />
-    </div>
+    <Footer />
+  </div>
   );
 }

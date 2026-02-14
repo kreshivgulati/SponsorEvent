@@ -96,8 +96,7 @@ export default function OrganizerNotificationsPage() {
                         {n.sponsor.email}
                       </span>) is interested in{" "}
                       <span className="font-semibold">
-                        {n.event.title}
-                      </span>
+{n.event?.title || "Deleted Event"}                      </span>
                     </p>
 
                     <p className="text-sm text-gray-500 mt-1">
