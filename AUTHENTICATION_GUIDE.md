@@ -37,7 +37,7 @@ SESSION_SECRET=your-session-secret-change-in-production
 # Google OAuth Credentials
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+GOOGLE_CALLBACK_URL=${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/callback
 
 # Email Configuration (for OTP)
 EMAIL_USER=your-email@gmail.com
@@ -52,7 +52,7 @@ EMAIL_PASS=your-gmail-app-password
 4. Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client ID"
 5. Configure:
    - Application type: Web application
-   - Authorized redirect URIs: `http://localhost:5000/api/auth/google/callback`
+   - Authorized redirect URIs:`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/callback`
 6. Copy Client ID and Client Secret to `.env`
 
 #### Gmail App Password Setup (for OTP)

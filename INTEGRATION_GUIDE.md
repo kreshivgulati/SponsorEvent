@@ -10,7 +10,7 @@ This guide explains how the frontend and backend are connected for the Event-Spo
    npm install
    npm start
    ```
-   Server runs on `http://localhost:5000`
+   Server runs on `${process.env.NEXT_PUBLIC_API_URL}`
 
 2. **Open the Frontend:**
    - Simply open `index.html` in a browser
@@ -28,13 +28,13 @@ This guide explains how the frontend and backend are connected for the Event-Spo
 
 ### API Base URL Configuration
 
-The frontend uses an environment-based API base URL. By default, it points to `http://localhost:5000`.
+The frontend uses an environment-based API base URL. By default, it points to `${process.env.NEXT_PUBLIC_API_URL}`.
 
 To change the API URL, update the script tag in `index.html`:
 
 ```html
 <script>
-    window.API_BASE_URL = 'http://localhost:5000'; // Change this for production
+    window.API_BASE_URL = '${process.env.NEXT_PUBLIC_API_URL}'; // Change this for production
 </script>
 ```
 
