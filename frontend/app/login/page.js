@@ -122,7 +122,7 @@ export default function LoginPage() {
             <button
               onClick={() =>
                 (window.location.href =
-                  "${process.env.NEXT_PUBLIC_API_URL}/api/auth/google")
+                  `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`)
               }
               className="w-full flex items-center justify-center gap-3 rounded-lg border border-gray-300 py-2.5 text-sm font-medium hover:bg-gray-50 transition"
             >

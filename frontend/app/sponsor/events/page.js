@@ -29,7 +29,7 @@ export default function SponsorEventsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/api/events");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events`);
         const data = await res.json();
 
         // backend returns { success: true, events }

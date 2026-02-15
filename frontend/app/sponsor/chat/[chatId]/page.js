@@ -41,7 +41,7 @@ export default function SponsorChatPage() {
 
   /* ================= SOCKET SETUP ================= */
   useEffect(() => {
-    socketRef.current = io(" ${process.env.NEXT_PUBLIC_API_URL}");
+    socketRef.current = io(`${process.env.NEXT_PUBLIC_API_URL}`);
 
     socketRef.current.emit("join-chat", chatId);
 
@@ -61,7 +61,7 @@ export default function SponsorChatPage() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch("${process.env.NEXT_PUBLIC_API_URL}/api/message", {
+      const res = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/api/message`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

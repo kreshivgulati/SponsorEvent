@@ -14,7 +14,7 @@ export default function SponsorChatsPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch(" ${process.env.NEXT_PUBLIC_API_URL}/api/chats/my", {
+    fetch(` ${process.env.NEXT_PUBLIC_API_URL}/api/chats/my`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
