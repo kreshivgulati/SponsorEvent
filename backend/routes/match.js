@@ -6,8 +6,7 @@
 import express from "express";
 import Event from "../models/Event.js";
 import Sponsor from "../models/Sponsor.js";
-import { authenticateToken } from "../../frontend/middleware/auth.js";
-
+import { authenticateToken } from "../middleware/auth.js"
 const router = express.Router();
 
 /**

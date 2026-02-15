@@ -1,6 +1,6 @@
 import express from "express";
 import Event from "../models/Event.js";
-import { authenticateToken } from "../../frontend/middleware/auth.js";
+import { authenticateToken } from "../middleware/auth.js"
 import mongoose from "mongoose";
 import Chat from "../models/Chat.js";
 import Interest from "../models/Interest.js";

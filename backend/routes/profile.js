@@ -1,7 +1,6 @@
 import express from "express";
 import Profile from "../models/Profile.js";
-import { authenticateToken } from "../middleware/auth.js";
-
+import { authenticateToken } from "../middleware/auth.js"
 const router = express.Router();
 
 /**

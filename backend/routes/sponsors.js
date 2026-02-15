@@ -1,6 +1,6 @@
 import express from "express";
 import Sponsor from "../models/Sponsor.js";
-import { authenticateToken } from "../../frontend/middleware/auth.js";
+import { authenticateToken } from "../middleware/auth.js"
 import User from "../models/User.js"
 const router = express.Router();
 

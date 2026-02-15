@@ -1,7 +1,6 @@
 import express from "express";
 import Interest from "../models/Interest.js";
-import { authenticateToken } from "../../frontend/middleware/auth.js";
-
+import { authenticateToken } from "../middleware/auth.js"
 const router = express.Router();
 
 // =======================
