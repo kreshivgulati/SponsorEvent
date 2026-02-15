@@ -1,6 +1,5 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import AuthGuard from "./AuthGuard"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,10 +19,7 @@ export default function RootLayout({ children }) {
         ></script>
       </head>
       <body className={inter.className}>
-        {/* ✅ AUTH GUARD APPLIED HERE */}
-        <AuthGuard>
-          {children}
-        </AuthGuard>
+        {children}
       </body>
     </html>
   )
