@@ -41,7 +41,7 @@ const server = http.createServer(app);
 
 export const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   },
 });
@@ -75,7 +75,7 @@ mongoose
 // =======================
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "process.env.FRONTEND_URL",
     credentials: true,
   })
 );
@@ -118,7 +118,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/callback",
+      callbackURL: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/callback`,
     },
     async (_, __, profile, done) => {
       try {

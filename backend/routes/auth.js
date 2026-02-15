@@ -16,7 +16,7 @@
   router.get(
     "/google/callback",
     passport.authenticate("google", {
-      failureRedirect: "http://localhost:3000/login",
+failureRedirect: `${process.env.FRONTEND_URL}/login`,
       session: false,
     }),
     (req, res) => {
@@ -26,8 +26,7 @@
         { expiresIn: "7d" }
       );
 
-      res.redirect(`http://localhost:3000/auth-callback?token=${token}`);
-    }
+res.redirect(`${process.env.FRONTEND_URL}/auth-callback?token=${token}`);    }
   );
 
   /* ---------------- EMAIL + PASSWORD LOGIN ---------------- */

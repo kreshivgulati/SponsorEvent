@@ -18,7 +18,7 @@ router.get(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    res.redirect("http://localhost:3000");
+    res.redirect(`${process.env.FRONTEND_URL}`);
   }
 );
 
