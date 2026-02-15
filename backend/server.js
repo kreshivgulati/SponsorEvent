@@ -5,7 +5,7 @@
 import express from "express";
 import cors from "cors";
 import session from "express-session";
-import passport from "passport";
+import passport from "./config/passport.js";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import http from "http";
 import { Server } from "socket.io";
@@ -118,8 +118,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/callback`,
-    },
+callbackURL: process.env.GOOGLE_CALLBACK_URL,    },
     async (_, __, profile, done) => {
       try {
         const email = profile.emails[0].value;
