@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Sidebar from '@/components/Sidebar'
@@ -5,19 +6,22 @@ import SponsorCard from '@/components/SponsorCard'
 
 async function getSponsors() {
   try {
-    const res = await fetch(' ${process.env.NEXT_PUBLIC_API_URL}/api/sponsors', {
-      cache: 'no-store', // always fresh data
-    })
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sponsors`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (!res.ok) {
-      throw new Error('Failed to fetch sponsors')
+      throw new Error("Failed to fetch sponsors");
     }
 
-    const data = await res.json()
-    return data.sponsors || []
+    const data = await res.json();
+    return data.sponsors || [];
   } catch (error) {
-    console.error(error)
-    return []
+    console.error(error);
+    return [];
   }
 }
 
