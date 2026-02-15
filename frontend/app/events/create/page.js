@@ -90,14 +90,17 @@ console.log("FORM SUBMIT WORKING");
   setLoading(false);
   return;
 }
-      const res = await fetch("http://localhost:5000/api/events", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+     const res = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/api/events`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(formData),
+  }
+);
 
       const data = await res.json();
 

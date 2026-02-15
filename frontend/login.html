@@ -202,7 +202,7 @@
     </style>
     <script>
         // API Configuration
-        window.API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+        window.API_BASE_URL = window.API_BASE_URL || ' ${process.env.NEXT_PUBLIC_API_URL}';
     </script>
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>

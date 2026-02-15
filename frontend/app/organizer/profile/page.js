@@ -24,7 +24,7 @@ export default function OrganizerProfile() {
     const fetchProfile = async () => {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5000/api/profile", {
+      const res = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -50,7 +50,7 @@ export default function OrganizerProfile() {
   const handleSave = async () => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/api/profile", {
+    const res = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

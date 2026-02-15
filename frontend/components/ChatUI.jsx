@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io(" ${process.env.NEXT_PUBLIC_API_URL}");
 
 export default function ChatUI({ chatId, role, token }) {
   const [messages, setMessages] = useState([]);
@@ -17,7 +17,7 @@ export default function ChatUI({ chatId, role, token }) {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://localhost:5000/routes/chat/${chatId}/messages`, {
+    fetch(` ${process.env.NEXT_PUBLIC_API_URL}/routes/chat/${chatId}/messages`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -61,7 +61,7 @@ export default function ChatUI({ chatId, role, token }) {
     if (!text.trim()) return;
 
     const res = await fetch(
-      `http://localhost:5000/routes/chat/${chatId}/message`,
+      ` ${process.env.NEXT_PUBLIC_API_URL}/routes/chat/${chatId}/message`,
       {
         method: "POST",
         headers: {

@@ -13,5 +13,5 @@
 
 // Default API base URL (used if window.API_BASE_URL is not set)
 // This will be overridden by script.js if window.API_BASE_URL exists
-window.API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+window.API_BASE_URL = window.API_BASE_URL || ' ${process.env.NEXT_PUBLIC_API_URL}';
 

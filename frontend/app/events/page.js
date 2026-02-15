@@ -16,7 +16,8 @@ export default function EventsPage() {
     const token = localStorage.getItem('authToken')
     if (!token) return
 
-    fetch('http://localhost:5000/api/auth/me', {
+     fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/api/events`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,24 +30,28 @@ export default function EventsPage() {
   }, [])
 
   // Fetch events
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        const res = await fetch('http://localhost:5000/api/events')
-        const data = await res.json()
-        if (data.success) {
-          setEvents(data.events)
-          console.log(data.events)
-        }
-      } catch (err) {
-        console.error('Failed to fetch events', err)
-      } finally {
-        setLoading(false)
-      }
-    }
+ useEffect(() => {
+  async function fetchEvents() {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/events`
+      );
 
-    fetchEvents()
-  }, [])
+      const data = await res.json();
+
+      if (data.success) {
+        setEvents(data.events);
+        console.log(data.events);
+      }
+    } catch (err) {
+      console.error("Failed to fetch events", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  fetchEvents();
+}, []);
 
   return (
     <div className="min-h-screen flex flex-col text-gray-900 bg-gradient-to-b from-[#F8FBFF] via-white to-[#F3F7FF]">

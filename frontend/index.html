@@ -9,7 +9,7 @@
     <script>
       // Set API base URL (defaults to localhost:5000)
       // For production, change this to your backend URL
-      window.API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+      window.API_BASE_URL = window.API_BASE_URL || ' ${process.env.NEXT_PUBLIC_API_URL}';
       // Authentication checks for protected pages are handled in script.js
       // using authToken in localStorage.
     </script>

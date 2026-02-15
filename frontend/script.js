@@ -6,7 +6,7 @@
  * API Configuration
  * Base URL for backend API - uses environment variable or defaults to localhost:5000
  */
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = window.API_BASE_URL || ' ${process.env.NEXT_PUBLIC_API_URL}';
 
 /**
  * Authentication Helper Functions

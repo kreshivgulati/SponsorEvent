@@ -18,17 +18,16 @@ export default function OrganizerChatPage() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    const loadMessages = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5000/api/message/${chatId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+   const loadMessages = async () => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/message/${chatId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
         const data = await res.json();
         setMessages(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -41,7 +40,7 @@ export default function OrganizerChatPage() {
 
   /* ================= SOCKET SETUP ================= */
   useEffect(() => {
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io(process.env.NEXT_PUBLIC_API_URL);
 
     socketRef.current.emit("join-chat", chatId);
 
@@ -55,30 +54,33 @@ export default function OrganizerChatPage() {
   }, [chatId]);
 
   /* ================= SEND MESSAGE ================= */
-  const sendMessage = async () => {
-    if (!text.trim()) return;
+ const sendMessage = async () => {
+  if (!text.trim()) return;
 
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    try {
-      const res = await fetch("http://localhost:5000/api/message", {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/message`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ chatId, text }),
-      });
+      }
+    );
 
-      const newMessage = await res.json();
+    const newMessage = await res.json();
 
-      // Optimistic update
-      setMessages((prev) => [...prev, newMessage]);
-      setText("");
-    } catch (err) {
-      console.error("Send failed");
-    }
-  };
+    // Optimistic update
+    setMessages((prev) => [...prev, newMessage]);
+    setText("");
+  } catch (err) {
+    console.error("Send failed");
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FBFF]">

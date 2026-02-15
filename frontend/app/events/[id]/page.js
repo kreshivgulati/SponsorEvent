@@ -14,8 +14,7 @@ export default function EventDetailsPage({ params }) {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:5000/api/events/${params.id}`
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/events/${params.id}`
         );
         const data = await res.json();
 
@@ -68,8 +67,7 @@ export default function EventDetailsPage({ params }) {
     }
 
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/chats/initiate",
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chats/initiate`,
         {
           method: "POST",
           headers: {

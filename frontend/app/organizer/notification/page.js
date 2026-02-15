@@ -13,11 +13,13 @@ export default function OrganizerNotificationsPage() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const startChat = async (notification) => {
-    try {
-      const token = localStorage.getItem("token");
+ const startChat = async (notification) => {
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:5000/api/chats", {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/chats`,
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,34 +29,40 @@ export default function OrganizerNotificationsPage() {
           sponsorId: notification.sponsor._id,
           eventId: notification.event._id,
         }),
-      });
+      }
+    );
 
-      if (!res.ok) throw new Error("Failed to create chat");
+    if (!res.ok) throw new Error("Failed to create chat");
 
-      const chat = await res.json();
-      router.push(`/organizer/chat/${chat._id}`);
-    } catch (err) {
-      console.error("Chat start failed", err);
-      alert("Could not start chat");
-    }
-  };
+    const chat = await res.json();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+    router.push(`/organizer/chat/${chat._id}`);
+  } catch (err) {
+    console.error("Chat start failed", err);
+    alert("Could not start chat");
+  }
+};
 
-    fetch("http://localhost:5000/api/interests/organizer", {
+      
+
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/interests/organizer`,
+    {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    }
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      setNotifications(data.interests || []);
+      setLoading(false);
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setNotifications(data.interests || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
+    .catch(() => setLoading(false));
+}, []);
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FBFF]">
       <Navbar />
