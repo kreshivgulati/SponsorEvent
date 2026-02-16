@@ -14,7 +14,7 @@ export default function EventDetailsPage({ params }) {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}api/events/${params.id}`
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/events/${params.id}`
         );
         const data = await res.json();
 
