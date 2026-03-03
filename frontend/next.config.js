@@ -5,6 +5,7 @@ const nextConfig = {
     domains: [
       'd8it4huxumps7.cloudfront.net',
       'images.unsplash.com',
+      'cdn.filepicker.io',
     ],
   },
 };

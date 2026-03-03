@@ -1,3 +1,8 @@
 {
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/organizer/sponsors/page": "app/organizer/sponsors/page.js",
+  "/events/create/page": "app/events/create/page.js",
+  "/organizer/analytics/page": "app/organizer/analytics/page.js",
+  "/organizer/dashboard/page": "app/organizer/dashboard/page.js",
+  "/organizer/events/page": "app/organizer/events/page.js"
 }
